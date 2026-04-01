@@ -146,8 +146,8 @@ function createStyleEl(): HTMLStyleElement {
     }
     .tour-skip-btn {
       position: fixed;
-      top: 24px;
-      right: 24px;
+      bottom: 24px;
+      left: 24px;
       z-index: ${TOUR_Z};
       padding: 8px 18px;
       border: none;
@@ -163,8 +163,8 @@ function createStyleEl(): HTMLStyleElement {
     .tour-skip-btn:hover { background: rgba(255,255,255,0.25); }
     .tour-replay-btn {
       position: fixed;
-      top: 24px;
-      right: 24px;
+      bottom: 24px;
+      left: 24px;
       z-index: ${TOUR_Z};
       padding: 8px 18px;
       border: none;

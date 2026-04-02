@@ -109,6 +109,19 @@ function appendKerningSpan(
 }
 
 /**
+ * spanがインラインラッパーの唯一の子である場合、そのラッパーを返す。
+ * margin-left をラッパーにもコピーしないとフロー上の配置が変わらないケースに対応。
+ */
+function getLayoutOwner(span: HTMLElement): HTMLElement | null {
+  const parent = span.parentElement
+  if (!parent) return null
+  if (parent.children.length !== 1) return null
+  const tag = parent.tagName
+  if (tag !== 'SPAN' && tag !== 'EM' && tag !== 'STRONG' && tag !== 'I' && tag !== 'B') return null
+  return parent
+}
+
+/**
  * 1文字span群にカーニングとindentを反映する。
  * kerning[i] のギャップは span[i+1] の margin-left で表現する。
  * indent は span[0] の margin-left で表現する。
@@ -126,12 +139,24 @@ export function applyKerningToSpans(spans: HTMLElement[], kerning: number[], ind
     // margin-left = 前のギャップ（kerning[i-1]）+ 継承 letter-spacing
     const gap = i === 0 ? indent : (kerning[i - 1] ?? 0)
     const lsMargin = i > 0 ? inheritedPx : 0
-    if (gap !== 0 || lsMargin !== 0) {
-      span.style.marginLeft = lsMargin !== 0
-        ? `calc(${gap / 1000}em + ${lsMargin}px)`
-        : `${gap / 1000}em`
+    const marginValue = (gap !== 0 || lsMargin !== 0)
+      ? (lsMargin !== 0 ? `calc(${gap / 1000}em + ${lsMargin}px)` : `${gap / 1000}em`)
+      : ''
+
+    if (marginValue) {
+      span.style.marginLeft = marginValue
     } else {
       span.style.removeProperty('margin-left')
+    }
+
+    // インラインラッパーの唯一の子なら親にも同じ値をコピー
+    const owner = getLayoutOwner(span)
+    if (owner) {
+      if (marginValue) {
+        owner.style.marginLeft = marginValue
+      } else {
+        owner.style.removeProperty('margin-left')
+      }
     }
   })
 }

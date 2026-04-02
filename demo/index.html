@@ -29,9 +29,14 @@
         box-sizing: border-box;
       }
 
+      html {
+        overflow-x: hidden;
+      }
+
       body {
         margin: 0;
         min-height: 100vh;
+        overflow-x: hidden;
         background:
           radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), transparent 36%),
           linear-gradient(180deg, #f5f5f3 0%, var(--bg) 100%);
@@ -128,6 +133,8 @@
 
       [data-sizable] {
         font-size: calc(var(--size) * 1px);
+        overflow-wrap: break-word;
+        word-break: break-all;
       }
 
       .bebas-hero {
@@ -175,6 +182,7 @@
       .variable-weight {
         font-family: 'Inter', sans-serif;
         line-height: 1;
+        word-break: break-all;
       }
 
       .caption {
@@ -508,6 +516,110 @@
           justify-self: stretch;
         }
       }
+
+      @media (max-width: 560px) {
+        main {
+          width: calc(100vw - 20px);
+          padding: 24px 0 64px;
+          gap: 28px;
+        }
+
+        .hero {
+          font-size: clamp(56px, 18vw, 82px);
+        }
+
+        .lede {
+          font-size: 16px;
+        }
+
+        .aside {
+          padding: 16px 18px;
+          border-radius: 14px;
+        }
+
+        .grid {
+          gap: 16px;
+          margin-top: 28px;
+        }
+
+        .card {
+          padding: 18px 18px;
+          border-radius: 16px;
+          overflow: hidden;
+        }
+
+        .sandbox {
+          border-radius: 16px;
+          margin-bottom: 28px;
+        }
+
+        .sandbox-header {
+          padding: 12px 14px 8px;
+        }
+
+        .sandbox-controls {
+          --label-width: 1fr;
+        }
+
+        .sandbox-row {
+          gap: 6px;
+        }
+
+        .sandbox-row--metrics {
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+        .sandbox-row--metrics > label {
+          grid-column: 1;
+        }
+        .sandbox-row--metrics > input[type="number"] {
+          grid-column: 2;
+        }
+        .sandbox-row--metrics > span:not(.sandbox-row--metrics-spacer) {
+          display: none;
+        }
+        .sandbox-row--metrics .sandbox-weight {
+          grid-column: 1 / -1;
+        }
+        .sandbox-row--metrics .sandbox-row--metrics-spacer {
+          display: none;
+        }
+        .sandbox-row--metrics .sandbox-btn {
+          grid-column: span 1;
+        }
+
+        .sandbox-body-wrap {
+          margin: 8px 14px 0;
+          padding: 14px 0 12px;
+        }
+
+        [data-sizable] {
+          font-size: min(calc(var(--size) * 1px), 18vw) !important;
+        }
+
+        .sandbox-preview {
+          font-size: 32px;
+        }
+
+        .sandbox-btn {
+          padding: 0 12px;
+          font-size: 12px;
+        }
+
+        .hint {
+          margin-top: 24px;
+          font-size: 13px;
+        }
+
+        .github-link {
+          top: 10px;
+          right: 10px;
+        }
+        .github-link svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -518,7 +630,7 @@
       <section class="intro">
         <div>
           <p class="eyebrow">Demo</p>
-          <h1 class="hero">TYPE<br />SPACING</h1>
+          <h1 class="hero">VISUAL<br />KERNING</h1>
           <p class="lede">Fine-tune letter spacing in the browser. Export as JSON, apply anywhere.</p>
         </div>
 

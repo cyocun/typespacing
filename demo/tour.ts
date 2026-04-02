@@ -120,7 +120,7 @@ function createCaption(ignoreAttr?: string): HTMLElement {
     fontFamily: "'Space Grotesk', -apple-system, sans-serif",
     fontSize: '15px',
     lineHeight: '1.6',
-    maxWidth: '360px',
+    maxWidth: 'min(360px, calc(100vw - 24px))',
     boxShadow: '0 8px 32px rgba(0,0,0,0.28)',
     pointerEvents: 'auto',
     transition: 'opacity 0.3s, transform 0.3s',
@@ -323,8 +323,10 @@ function showCaption(caption: HTMLElement, stepNum: number, totalSteps: number, 
 
   requestAnimationFrame(() => {
     const captionRect = caption.getBoundingClientRect()
-    if (captionRect.bottom > window.innerHeight - 24) {
-      caption.style.top = `${window.innerHeight - captionRect.height - 24}px`
+    // Skip tourボタン分のスペースを確保（ボタン高さ ~36px + bottom 24px + gap 12px）
+    const bottomMargin = 72
+    if (captionRect.bottom > window.innerHeight - bottomMargin) {
+      caption.style.top = `${window.innerHeight - captionRect.height - bottomMargin}px`
     }
     caption.style.opacity = '1'
     caption.style.transform = 'translateY(0)'
@@ -343,9 +345,16 @@ function setCaptionCenter(caption: HTMLElement, stepNum: number, totalSteps: num
   })
 }
 
+function clampLeft(left: number, caption: HTMLElement, margin = 12): number {
+  const vw = window.innerWidth
+  const w = caption.offsetWidth || 360
+  return Math.max(margin, Math.min(left, vw - w - margin))
+}
+
 function moveCaption(caption: HTMLElement, target: HTMLElement, position: CaptionPosition) {
   const rect = target.getBoundingClientRect()
   const pad = 16
+  const margin = 12
 
   caption.style.left = 'auto'
   caption.style.top = 'auto'
@@ -353,18 +362,26 @@ function moveCaption(caption: HTMLElement, target: HTMLElement, position: Captio
   caption.style.bottom = 'auto'
 
   if (position === 'bottom') {
-    caption.style.left = `${rect.left}px`
+    caption.style.left = `${clampLeft(rect.left, caption, margin)}px`
     caption.style.top = `${rect.bottom + pad}px`
   } else if (position === 'top') {
-    caption.style.left = `${rect.left}px`
+    caption.style.left = `${clampLeft(rect.left, caption, margin)}px`
     caption.style.bottom = `${window.innerHeight - rect.top + pad}px`
   } else if (position === 'right') {
-    caption.style.left = `${rect.right + pad}px`
+    caption.style.left = `${clampLeft(rect.right + pad, caption, margin)}px`
     caption.style.top = `${rect.top}px`
   } else if (position === 'left') {
-    caption.style.right = `${window.innerWidth - rect.left + pad}px`
-    const maxTop = window.innerHeight - caption.offsetHeight - 24
-    caption.style.top = `${Math.min(rect.top, maxTop)}px`
+    // 左配置: 画面幅が狭い場合はtopにフォールバック（パレットボタンの上に表示）
+    const rightEdge = window.innerWidth - rect.left + pad
+    const captionWidth = caption.offsetWidth || 360
+    if (rightEdge + captionWidth > window.innerWidth - margin * 2) {
+      caption.style.left = `${clampLeft(rect.left, caption, margin)}px`
+      caption.style.bottom = `${window.innerHeight - rect.top + pad}px`
+    } else {
+      caption.style.right = `${rightEdge}px`
+      const maxTop = window.innerHeight - caption.offsetHeight - 24
+      caption.style.top = `${Math.min(rect.top, maxTop)}px`
+    }
   }
 }
 
@@ -579,7 +596,7 @@ async function executeAction(action: TourAction, ctx: RunContext): Promise<void>
 
     case 'scroll': {
       const target = resolve(action.target)
-      if (target) target.scrollIntoView({ block: action.block ?? 'center' })
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: action.block ?? 'center' })
       break
     }
 

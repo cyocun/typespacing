@@ -563,28 +563,30 @@ let resizing = false
 let resizeStartX = 0
 let resizeStartW = 0
 
-resizeHandle.addEventListener('pointerdown', (e: PointerEvent) => {
-  e.preventDefault()
-  resizing = true
-  resizeStartX = e.clientX
-  resizeStartW = sandboxBody.offsetWidth
-  resizeHandle.classList.add('is-dragging')
-  resizeHandle.setPointerCapture(e.pointerId)
-})
+if (resizeHandle) {
+  resizeHandle.addEventListener('pointerdown', (e: PointerEvent) => {
+    e.preventDefault()
+    resizing = true
+    resizeStartX = e.clientX
+    resizeStartW = sandboxBody.offsetWidth
+    resizeHandle.classList.add('is-dragging')
+    resizeHandle.setPointerCapture(e.pointerId)
+  })
 
-resizeHandle.addEventListener('pointermove', (e: PointerEvent) => {
-  if (!resizing) return
-  const delta = e.clientX - resizeStartX
-  const newW = Math.max(200, resizeStartW + delta)
-  sandboxBody.style.maxWidth = `${newW}px`
-})
+  resizeHandle.addEventListener('pointermove', (e: PointerEvent) => {
+    if (!resizing) return
+    const delta = e.clientX - resizeStartX
+    const newW = Math.max(200, resizeStartW + delta)
+    sandboxBody.style.maxWidth = `${newW}px`
+  })
 
-function stopResize() {
-  resizing = false
-  resizeHandle.classList.remove('is-dragging')
+  function stopResize() {
+    resizing = false
+    resizeHandle.classList.remove('is-dragging')
+  }
+  resizeHandle.addEventListener('pointerup', stopResize)
+  resizeHandle.addEventListener('pointercancel', stopResize)
 }
-resizeHandle.addEventListener('pointerup', stopResize)
-resizeHandle.addEventListener('pointercancel', stopResize)
 
 // --- Import JSON via drag & drop on editor panel ---
 const panel = document.querySelector('.visual-kerning-panel') as HTMLElement | null

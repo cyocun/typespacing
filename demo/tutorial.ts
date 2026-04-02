@@ -15,6 +15,21 @@ const cmdKLabel = isMac ? 'Cmd + K' : 'Ctrl + K'
 
 // --- デモ固有ヘルパー ---
 
+/** スムーズスクロールし scrollend を待つ。既にターゲット位置なら即 resolve。1.5s でタイムアウト。 */
+function smoothScrollTo(action: () => void, isAtTarget: () => boolean): Promise<void> {
+  return new Promise<void>(resolve => {
+    if (isAtTarget()) { resolve(); return }
+    const timeout = setTimeout(done, 1500)
+    function done() {
+      clearTimeout(timeout)
+      window.removeEventListener('scrollend', done)
+      resolve()
+    }
+    window.addEventListener('scrollend', done, { once: true })
+    action()
+  })
+}
+
 export function simulateCmdK() {
   const o = { key: 'k', code: 'KeyK', bubbles: true, metaKey: isMac, ctrlKey: !isMac }
   window.dispatchEvent(new KeyboardEvent('keydown', o))
@@ -90,11 +105,26 @@ const TARGET_TEXT = '.card:first-child [data-sizable]'
 export function buildTutorialSteps(onEnable: OnEnable): TourStep[] {
   let enabledPromise: Promise<void>
   return [
+    // Step 0: イントロ — ページ上部でツアーの導入
+    {
+      actions: [
+        { type: 'run', fn: () => smoothScrollTo(
+          () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+          () => window.scrollY === 0,
+        )},
+        { type: 'overlay', visible: true },
+        { type: 'caption-center', content: [
+          'Welcome to ', { strong: 'visual-kerning' }, '!',
+          '\n',
+          'Let\'s see how to fine-tune letter spacing in the browser.',
+        ]},
+        { type: 'wait', ms: 4000 },
+      ],
+    },
+
     // Step 1: Cmd+K でエディタを起動
     {
       actions: [
-        { type: 'wait', ms: 400 },
-        { type: 'overlay', visible: true },
         { type: 'caption-center', content: [
           'Press ', { key: 'cmd', label: isMac ? '\u2318' : 'Ctrl' }, ' + ', { key: 'k', label: 'K' }, ' to open the editor palette.',
         ]},
@@ -111,7 +141,14 @@ export function buildTutorialSteps(onEnable: OnEnable): TourStep[] {
     // Step 2: テキストブロックをクリックして編集開始
     {
       actions: [
-        { type: 'scroll', target: TARGET_TEXT, block: 'center' },
+        { type: 'run', fn: () => {
+          const el = document.querySelector(TARGET_TEXT)
+          if (!el) return Promise.resolve()
+          return smoothScrollTo(
+            () => el.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+            () => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= window.innerHeight },
+          )
+        }},
         { type: 'spotlight-teleport', target: TARGET_TEXT },
         { type: 'caption', target: TARGET_TEXT, position: 'bottom', content: ['Clicking a text block to start editing...'], instant: true },
         { type: 'wait', ms: 1500 },
@@ -229,6 +266,32 @@ export function buildTutorialSteps(onEnable: OnEnable): TourStep[] {
           window.confirm = originalConfirm
         }},
         { type: 'wait', ms: 1500 },
+      ],
+    },
+
+    // Step 8: Sandbox へ誘導
+    {
+      actions: [
+        { type: 'caption-hide' },
+        { type: 'run', fn: () => {
+          const el = document.querySelector('#sandbox')
+          if (!el) return Promise.resolve()
+          const absTop = el.getBoundingClientRect().top + window.scrollY
+          const target = Math.max(0, absTop - 32)
+          return smoothScrollTo(
+            () => window.scrollTo({ top: target, behavior: 'smooth' }),
+            () => Math.abs(window.scrollY - target) < 2,
+          )
+        }},
+        { type: 'spotlight-teleport', target: '#sandbox', pad: 8 },
+        { type: 'caption-center', content: [
+          'Your turn!',
+          '\n',
+          'Pick a font, type some text,',
+          '\n',
+          'and try kerning it yourself.',
+        ]},
+        { type: 'wait', ms: 4000 },
       ],
     },
   ]

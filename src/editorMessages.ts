@@ -26,12 +26,12 @@ const baseMessages = {
 export const editorMessages = {
   en: {
     ...baseMessages.en,
-    helpText: 'Click text, use Alt + ←/→ to adjust. Drag the header to move the palette, and use − / + to collapse or expand it.',
+    helpText: '⌥ + ←/→ ±10  ⌥ + ⌘ + ←/→ ±100\n⌘ + K toggle  B compare',
     warnSpanTarget: '<span> detected as target. Use a block element (<p>, <div>, <h1>) to avoid nested spans.',
   },
   ja: {
     ...baseMessages.ja,
-    helpText: 'テキストをクリックし、Alt + ←/→ で調整。ヘッダーはドラッグで移動、− / + で折りたたみ・展開できます。',
+    helpText: '⌥ + ←/→ ±10  ⌥ + ⌘ + ←/→ ±100\n⌘ + K 切替  B 比較',
     warnSpanTarget: '対象が <span> です。ネストを避けるためブロック要素（<p>, <div>, <h1>）の使用を推奨します。',
   },
 } as const

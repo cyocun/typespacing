@@ -214,6 +214,8 @@ function createStyleText(options: KerningUIRootOptions): string {
         font-size: 11px;
         line-height: 1.55;
         color: rgba(255,255,255,.6);
+        white-space: pre-wrap;
+        word-spacing: 0.15em;
       }
       .${toastClass} {
         display: none;

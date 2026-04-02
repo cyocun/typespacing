@@ -1,4 +1,4 @@
-# visual-kerning
+# Visual Kerning
 
 [English](./README.md) | [日本語](./README.ja.md)
 
@@ -13,7 +13,7 @@
 Adjust kerning in the browser, export it as JSON,
 and apply it to production DOM without tying yourself to a specific framework.
 
-![visual-kerning demo](.github/readme/demo.gif)
+![Visual Kerning demo](.github/readme/demo.gif)
 
 ## Demo
 
@@ -25,12 +25,12 @@ and apply it to production DOM without tying yourself to a specific framework.
 > The editing UI is intended for development and staging.
 > In production, use `visualKerning({ editable: false, kerning })`.
 
-## Why visual-kerning
+## Why Visual Kerning
 
 CSS `letter-spacing` is great when one value is enough.
 It becomes limiting when you need pair-by-pair adjustments in real UI.
 
-`visual-kerning` is built for teams who want a practical workflow like this:
+Visual Kerning is built for teams who want a practical workflow like this:
 
 1. Tune spacing visually in the browser during development or staging.
 2. Export the result as JSON.
@@ -83,7 +83,7 @@ editor.mount()
 
 ## What it works well for
 
-`visual-kerning` is aimed at text that matters visually on a normal website.
+Visual Kerning is aimed at text that matters visually on a normal website.
 
 - Headings
 - Hero copy
@@ -102,7 +102,7 @@ marketing sites, portfolios, and editorial-style UI.
 - Inline formatting inside the target element
   — e.g. `<span>`, `<em>`, `<strong>`, `<b>`, `<i>`
 
-When editing, `visual-kerning` wraps visible characters in spans
+When editing, Visual Kerning wraps visible characters in spans
 while trying to preserve useful inline structure.
 
 To exclude an element from editing,
@@ -193,7 +193,7 @@ The browsing and editing workflow itself is browser-specific:
 
 ## Why `margin-left` instead of `letter-spacing`
 
-visual-kerning wraps each visible character in a `<span>`
+Visual Kerning wraps each visible character in a `<span>`
 and controls spacing via `margin-left` on each span.
 This is a deliberate choice over `letter-spacing`:
 
@@ -215,7 +215,7 @@ This is a deliberate choice over `letter-spacing`:
 
 ## Accessibility
 
-visual-kerning wraps each character in a `<span>`,
+Visual Kerning wraps each character in a `<span>`,
 which can cause screen readers to read text one character at a time.
 
 To prevent this, enable the `accessible` option in production mode:
@@ -242,7 +242,7 @@ When enabled, each target element is restructured:
 <!-- After (with accessible: true) -->
 <h1>
   <span class="visual-kerning-sr-only">Hello</span>
-  <span class="visual-kerning-visual" aria-hidden="true">
+  <span class="visual-kerning-presentation" aria-hidden="true">
     <span class="visual-kerning-char" style="margin-left:...">H</span>
     <span class="visual-kerning-char" style="margin-left:...">e</span>
     ...
@@ -259,13 +259,13 @@ while the kerned spans are hidden via `aria-hidden`.
 
 ## CSS classes
 
-visual-kerning adds these classes to the DOM for styling and selection:
+Visual Kerning adds these classes to the DOM for styling and selection:
 
 | Class | Applied to | Description |
 |-------|-----------|-------------|
 | `visual-kerning-char` | Each character `<span>` | Always present on kerned characters |
 | `visual-kerning-sr-only` | Visually-hidden text | Only with `accessible: true` — contains the original readable text |
-| `visual-kerning-visual` | Wrapper around kerned spans | Only with `accessible: true` — has `aria-hidden="true"` |
+| `visual-kerning-presentation` | Wrapper around kerned spans | Only with `accessible: true` — has `aria-hidden="true"` |
 | `visual-kerning-active` | Target element | Added while the element is being edited |
 | `visual-kerning-modified` | Target element | Added when kerning has been applied |
 
@@ -276,7 +276,7 @@ visual-kerning adds these classes to the DOM for styling and selection:
 }
 
 /* Example: target the visual wrapper when accessible is enabled */
-.visual-kerning-visual {
+.visual-kerning-presentation {
   /* wraps all kerned spans, hidden from screen readers */
 }
 ```

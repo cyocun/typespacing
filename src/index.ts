@@ -7,7 +7,7 @@ export type { KerningExport } from './applyKerning'
 export {
   CHAR_CLASS,
   SR_ONLY_CLASS,
-  VISUAL_CLASS,
+  PRESENTATION_CLASS,
   ACTIVE_CLASS,
   MODIFIED_CLASS,
 } from './applyKerning'

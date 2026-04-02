@@ -1,4 +1,4 @@
-# visual-kerning
+# Visual Kerning
 
 > Adjust per-character kerning in the browser, export as JSON, apply in production.
 
@@ -116,7 +116,7 @@ When multiple gaps are selected, Alt + Arrow adjusts all at once (tracking).
 
 With `accessible: true`, each target element gets:
 - A visually-hidden `<span class="visual-kerning-sr-only">` with the original text
-- An `<span class="visual-kerning-visual" aria-hidden="true">` wrapper around the kerned spans
+- An `<span class="visual-kerning-presentation" aria-hidden="true">` wrapper around the kerned spans
 
 Screen readers read the hidden original text; the per-character spans are ignored.
 Only applies in production mode (`editable: false`). DOM structure changes — adjust CSS selectors if needed.
@@ -125,7 +125,7 @@ Only applies in production mode (`editable: false`). DOM structure changes — a
 
 - `visual-kerning-char`: each character span (always present on kerned characters)
 - `visual-kerning-sr-only`: visually-hidden original text (accessible: true only)
-- `visual-kerning-visual`: wrapper around kerned spans with aria-hidden (accessible: true only)
+- `visual-kerning-presentation`: wrapper around kerned spans with aria-hidden (accessible: true only)
 - `visual-kerning-active`: target element while being edited
 - `visual-kerning-modified`: target element after kerning is applied
 

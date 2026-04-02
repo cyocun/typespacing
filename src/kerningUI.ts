@@ -66,7 +66,7 @@ export interface VisualKerningOptions {
    * ```html
    * <h1>
    *   <span class="visual-kerning-sr-only">original text</span>
-   *   <span class="visual-kerning-visual" aria-hidden="true">
+   *   <span class="visual-kerning-presentation" aria-hidden="true">
    *     ...kerned spans...
    *   </span>
    * </h1>

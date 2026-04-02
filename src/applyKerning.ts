@@ -48,7 +48,7 @@ export const CHAR_CLASS = 'visual-kerning-char'
 /** Class for the visually-hidden original text element (only with `accessible: true`). */
 export const SR_ONLY_CLASS = 'visual-kerning-sr-only'
 /** Class for the `aria-hidden` wrapper around kerned spans (only with `accessible: true`). */
-export const VISUAL_CLASS = 'visual-kerning-visual'
+export const PRESENTATION_CLASS = 'visual-kerning-presentation'
 /** Class added to the target element while it is being edited. */
 export const ACTIVE_CLASS = 'visual-kerning-active'
 /** Class added to the target element after kerning has been applied. */
@@ -73,7 +73,7 @@ function wrapAccessible(el: HTMLElement, originalText: string): void {
   srText.textContent = originalText.replace(/\n/g, ' ')
 
   const visual = document.createElement('span')
-  visual.className = VISUAL_CLASS
+  visual.className = PRESENTATION_CLASS
   visual.setAttribute('aria-hidden', 'true')
 
   while (el.firstChild) visual.appendChild(el.firstChild)
@@ -429,7 +429,7 @@ export function collectKerningText(node: Node): string {
  * @param options.accessible - Add screen reader support (default: `false`).
  *   When enabled, each target element is restructured into:
  *   `<span class="visual-kerning-sr-only">original text</span>` +
- *   `<span class="visual-kerning-visual" aria-hidden="true">...kerned spans...</span>`.
+ *   `<span class="visual-kerning-presentation" aria-hidden="true">...kerned spans...</span>`.
  *   Screen readers read the hidden original text; the per-character spans are ignored.
  *   This changes the DOM structure — CSS/JS that references child elements directly
  *   may need selector adjustments.
@@ -464,7 +464,7 @@ export function applyKerning(
     // accessible構造が既にある場合は剥がしてから再適用
     const existingSrOnly = el.querySelector(`:scope > .${SR_ONLY_CLASS}`)
     if (existingSrOnly) {
-      const existingVisual = el.querySelector(`:scope > .${VISUAL_CLASS}`)
+      const existingVisual = el.querySelector(`:scope > .${PRESENTATION_CLASS}`)
       existingSrOnly.remove()
       if (existingVisual) {
         // ラッパー内の子要素を親に戻す

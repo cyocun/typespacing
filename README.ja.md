@@ -1,4 +1,4 @@
-# visual-kerning
+# Visual Kerning
 
 [English](./README.md) | [日本語](./README.ja.md)
 
@@ -13,7 +13,7 @@
 ブラウザ上でカーニングを調整し、JSONとして書き出して、
 本番DOMへフレームワーク非依存で適用できるツールです。
 
-![visual-kerning demo](.github/readme/demo.gif)
+![Visual Kerning demo](.github/readme/demo.gif)
 
 ## Demo
 
@@ -25,12 +25,12 @@
 > 編集UIは主に開発環境やステージング環境で使う想定です。
 > 本番では `visualKerning({ editable: false, kerning })` で適用します。
 
-## visual-kerning でできること
+## Visual Kerning でできること
 
 CSS の `letter-spacing` は1つの値で十分なときには便利ですが、
 実際のUIで文字ペアごとの調整をしたくなると限界があります。
 
-`visual-kerning` は次のような運用を想定しています。
+Visual Kerning は次のような運用を想定しています。
 
 1. 開発中またはステージング中にブラウザ上で視覚的に字間を調整する
 2. 結果を JSON として書き出す
@@ -39,7 +39,7 @@ CSS の `letter-spacing` は1つの値で十分なときには便利ですが、
 主な特徴:
 
 - **CSSでは不可能なペア単位の字間制御**
-  — `letter-spacing` は全文字一律。visual-kerning は1ギャップずつ個別に調整できる
+  — `letter-spacing` は全文字一律。Visual Kerning は1ギャップずつ個別に調整できる
 - **Illustratorライクな操作**
   — Alt + 矢印キーで微調整/粗調整、ブラウザ上で直接編集
 - **編集から本番まで1つのAPI**
@@ -83,7 +83,7 @@ editor.mount()
 
 ## 向いている用途
 
-`visual-kerning` は、Webサイト上で見た目の印象が重要なテキストに向いています。
+Visual Kerning は、Webサイト上で見た目の印象が重要なテキストに向いています。
 
 - 見出し
 - ヒーローコピー
@@ -193,7 +193,7 @@ off()
 
 ## なぜ `letter-spacing` ではなく `margin-left` か
 
-visual-kerning は各文字を `<span>` で囲み、
+Visual Kerning は各文字を `<span>` で囲み、
 `margin-left` で字間を制御します。
 `letter-spacing` を使わないのは意図的な設計です。
 
@@ -215,7 +215,7 @@ visual-kerning は各文字を `<span>` で囲み、
 
 ## アクセシビリティ
 
-visual-kerning は各文字を `<span>` で分割するため、
+Visual Kerning は各文字を `<span>` で分割するため、
 スクリーンリーダーがテキストを1文字ずつ読み上げてしまう可能性があります。
 
 これを防ぐには、本番モードで `accessible` オプションを有効にしてください:
@@ -242,7 +242,7 @@ editor.mount()
 <!-- accessible: true -->
 <h1>
   <span class="visual-kerning-sr-only">Hello</span>
-  <span class="visual-kerning-visual" aria-hidden="true">
+  <span class="visual-kerning-presentation" aria-hidden="true">
     <span class="visual-kerning-char" style="margin-left:...">H</span>
     <span class="visual-kerning-char" style="margin-left:...">e</span>
     ...
@@ -258,13 +258,13 @@ editor.mount()
 
 ## CSSクラス
 
-visual-kerning がDOMに付与するクラス一覧:
+Visual Kerning がDOMに付与するクラス一覧:
 
 | クラス | 付与先 | 説明 |
 |-------|--------|------|
 | `visual-kerning-char` | 各文字の `<span>` | カーニング対象の文字に常に付与 |
 | `visual-kerning-sr-only` | visually-hidden テキスト | `accessible: true` 時のみ — 元テキストを保持 |
-| `visual-kerning-visual` | カーニング済みspanのラッパー | `accessible: true` 時のみ — `aria-hidden="true"` |
+| `visual-kerning-presentation` | カーニング済みspanのラッパー | `accessible: true` 時のみ — `aria-hidden="true"` |
 | `visual-kerning-active` | 対象要素 | 編集中のテキストブロックに付与 |
 | `visual-kerning-modified` | 対象要素 | カーニングが適用されたブロックに付与 |
 
@@ -275,7 +275,7 @@ visual-kerning がDOMに付与するクラス一覧:
 }
 
 /* 例: accessible有効時のビジュアルラッパー */
-.visual-kerning-visual {
+.visual-kerning-presentation {
   /* カーニング済みspan群を囲む。スクリーンリーダーからは隠される */
 }
 ```

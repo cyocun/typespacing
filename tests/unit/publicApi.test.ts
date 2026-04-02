@@ -7,8 +7,8 @@ describe('public API surface', () => {
       'ACTIVE_CLASS',
       'CHAR_CLASS',
       'MODIFIED_CLASS',
+      'PRESENTATION_CLASS',
       'SR_ONLY_CLASS',
-      'VISUAL_CLASS',
       'visualKerning',
     ])
   })

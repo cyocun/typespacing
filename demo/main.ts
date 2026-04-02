@@ -1,6 +1,5 @@
 import { visualKerning } from '../src/kerningUI'
 import { wrapElementWithKerning } from '../src/applyKerning'
-import { setupDropZone } from '../src/dropZone'
 import { ACTIVE_CLASS, CHAR_CLASS, MODIFIED_CLASS, STORAGE_KEY } from '../src/kerningEditor'
 import kerningData from './kerning-export.json'
 import { createTour } from './tour'
@@ -694,11 +693,48 @@ function applyImportedHtml(data: ImportedHtmlData) {
 }
 
 // --- HTML drag & drop on sandbox ---
-setupDropZone(
-  sandboxBody,
-  m.htmlDropOverlay,
-  (f) => f.name.endsWith('.html') || f.name.endsWith('.htm'),
-  (file) => {
+{
+  const sandbox = document.getElementById('sandbox') as HTMLElement
+  const overlay = document.createElement('div')
+  overlay.textContent = m.htmlDropOverlay
+  Object.assign(overlay.style, {
+    display: 'none',
+    position: 'absolute',
+    inset: '0',
+    background: 'rgba(255, 255, 255, 0.82)',
+    backdropFilter: 'blur(6px)',
+    color: '#1a1a1a',
+    font: '600 13px/1 system-ui, sans-serif',
+    letterSpacing: '0.06em',
+    borderRadius: 'inherit',
+    justifyContent: 'center',
+    alignItems: 'center',
+    pointerEvents: 'none',
+    zIndex: '1',
+  })
+  sandbox.style.position = 'relative'
+  sandbox.appendChild(overlay)
+
+  let dragCount = 0
+  sandbox.addEventListener('dragenter', (e) => {
+    e.preventDefault()
+    dragCount++
+    overlay.style.display = 'flex'
+  })
+  sandbox.addEventListener('dragleave', () => {
+    dragCount--
+    if (dragCount <= 0) { dragCount = 0; overlay.style.display = 'none' }
+  })
+  sandbox.addEventListener('dragover', (e) => {
+    e.preventDefault()
+    e.dataTransfer!.dropEffect = 'copy'
+  })
+  sandbox.addEventListener('drop', (e) => {
+    e.preventDefault()
+    dragCount = 0
+    overlay.style.display = 'none'
+    const file = e.dataTransfer?.files[0]
+    if (!file || !(file.name.endsWith('.html') || file.name.endsWith('.htm'))) return
     file.text().then((text) => {
       try {
         const data = parseExportedHtml(text)
@@ -712,8 +748,8 @@ setupDropZone(
         setLuckyStatus(m.htmlImportFailed, true)
       }
     })
-  },
-)
+  })
+}
 
 // Export HTML
 exportBtn.addEventListener('click', () => {

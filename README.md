@@ -13,11 +13,11 @@
 Adjust kerning in the browser, export it as JSON,
 and apply it to production DOM without tying yourself to a specific framework.
 
+![visual-kerning demo](.github/readme/demo.gif)
+
 ## Demo
 
 **Start here:** [Open the live demo](https://ie3jp.github.io/visual-kerning/)
-
-![visual-kerning demo](.github/readme/demo.gif)
 
 - Local demo: `npm run demo`
 - Static build: `npm run demo:build`

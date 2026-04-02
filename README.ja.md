@@ -13,11 +13,11 @@
 ブラウザ上でカーニングを調整し、JSONとして書き出して、
 本番DOMへフレームワーク非依存で適用できるツールです。
 
+![visual-kerning demo](.github/readme/demo.gif)
+
 ## Demo
 
 **まずはここから:** [ライブデモを開く](https://ie3jp.github.io/visual-kerning/)
-
-![visual-kerning demo](.github/readme/demo.gif)
 
 - ローカルデモ: `npm run demo`
 - 静的ビルド: `npm run demo:build`

@@ -154,6 +154,38 @@ describe('applyKerning helpers', () => {
     expect(spans[1]?.style.marginLeft).toBeFalsy()
   })
 
+  it('applyKerningToSpans copies margin-left to inline wrapper parent', () => {
+    const el = document.createElement('div')
+    const em = document.createElement('em')
+    const span = document.createElement('span'); span.textContent = 'A'
+    em.appendChild(span)
+    const s2 = document.createElement('span'); s2.textContent = 'V'
+    el.append(em, s2)
+
+    applyKerningToSpans([span, s2], [100, 0], 50)
+
+    // span自体にmargin-leftがセットされる
+    expect(span.style.marginLeft).toBe('0.05em')
+    // 唯一の子なのでemラッパーにもコピーされる
+    expect(em.style.marginLeft).toBe('0.05em')
+    // s2は直接の子なのでラッパーコピーなし
+    expect(s2.style.marginLeft).toBe('0.1em')
+  })
+
+  it('applyKerningToSpans does not copy margin to wrapper with multiple children', () => {
+    const el = document.createElement('div')
+    const strong = document.createElement('strong')
+    const s1 = document.createElement('span'); s1.textContent = 'A'
+    const s2 = document.createElement('span'); s2.textContent = 'B'
+    strong.append(s1, s2)
+    el.appendChild(strong)
+
+    applyKerningToSpans([s1, s2], [100, 0], 50)
+
+    // strongは複数の子を持つのでコピーしない
+    expect(strong.style.marginLeft).toBeFalsy()
+  })
+
   it('applyKerning warns when selector is missing', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const data: KerningExport = {

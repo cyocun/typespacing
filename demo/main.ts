@@ -60,7 +60,6 @@ if (localStorage.getItem(IMPORTED_KEY)) {
   localStorage.removeItem(IMPORTED_KEY)
 } else {
   localStorage.removeItem(STORAGE_KEY)
-  localStorage.removeItem(TUTORIAL_DONE_KEY)
   localStorage.setItem(STORAGE_KEY, JSON.stringify(areasToPersistedMap(kerningData.areas)))
 }
 
@@ -698,4 +697,28 @@ exportBtn.addEventListener('click', () => {
   a.download = 'visual-kerning-export.html'
   a.click()
   URL.revokeObjectURL(a.href)
+})
+
+// --- Install tabs ---
+document.querySelectorAll('.install-tab-bar').forEach(bar => {
+  const tabs = bar.querySelectorAll<HTMLButtonElement>('.install-tab')
+  const container = bar.closest('.install-tabs')!
+  const panels = container.querySelectorAll<HTMLPreElement>('.install-panel')
+
+  const section = bar.closest('.for-engineers')
+  const usagePkg = section?.querySelector<HTMLElement>('[data-usage="pkg"]')
+  const usageCdn = section?.querySelector<HTMLElement>('[data-usage="cdn"]')
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const id = tab.dataset.tab!
+      tabs.forEach(t => t.classList.toggle('is-active', t === tab))
+      panels.forEach(p => p.classList.toggle('is-active', p.dataset.tab === id))
+      if (usagePkg && usageCdn) {
+        const isCdn = id === 'cdn'
+        usagePkg.hidden = isCdn
+        usageCdn.hidden = !isCdn
+      }
+    })
+  })
 })

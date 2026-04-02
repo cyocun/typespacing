@@ -176,21 +176,19 @@ function createStyleEl(): HTMLStyleElement {
     }
     .tour-skip-btn:hover { background: rgba(255,255,255,0.25); }
     .tour-replay-btn {
-      position: fixed;
-      bottom: 24px;
-      left: 24px;
-      z-index: ${TOUR_Z};
-      padding: 8px 18px;
-      border: none;
-      border-radius: 8px;
-      background: rgba(0,0,0,0.06);
+      padding: 4px 10px;
+      border: 1px solid var(--line, rgba(0,0,0,0.08));
+      border-radius: 6px;
+      background: var(--panel, rgba(255,255,255,0.72));
+      backdrop-filter: blur(8px);
       color: var(--muted, #727270);
-      font: 600 13px/1.2 'Space Grotesk', sans-serif;
+      font: 600 12px/1 'Space Grotesk', sans-serif;
       cursor: pointer;
       letter-spacing: 0.04em;
-      transition: background 0.2s;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
     }
-    .tour-replay-btn:hover { background: rgba(0,0,0,0.12); }
+    .tour-replay-btn:hover { background: rgba(0,0,0,0.06); }
     .tour-keycap {
       display: inline-block;
       min-width: 24px;
@@ -650,7 +648,12 @@ export function createTour(options: TourOptions): Tour {
       onBeforeReplay?.()
       runTour()
     })
-    document.body.appendChild(replayBtn)
+    const nav = document.querySelector('.top-nav')
+    if (nav) {
+      nav.insertBefore(replayBtn, nav.firstChild)
+    } else {
+      document.body.appendChild(replayBtn)
+    }
   }
 
   function runTour() {

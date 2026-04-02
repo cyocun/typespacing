@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../shared.css" />
+    <script>if(/Mac|iPhone|iPad|iPod/.test(navigator.userAgent))document.documentElement.classList.add('is-mac')</script>
   </head>
   <body>
     <nav class="top-nav" data-visual-kerning-ignore>
@@ -31,12 +32,16 @@
         <div>
           <p class="eyebrow">Demo</p>
           <h1 class="hero">VISUAL<br />KERNING</h1>
-          <p class="lede">ブラウザ上で文字間を微調整。JSONに書き出して、どこにでも適用。</p>
+          <p class="lede">ブラウザ上で文字間を微調整。<br />JSONに書き出してどこにでも適用。</p>
         </div>
 
         <aside class="aside">
           <h2>このページで試せます</h2>
-          <p>エディタパレットが表示されています。テキストをクリックし、<code>Alt/Option + ←/→</code>で文字間を調整できます。パレットはドラッグで移動、<code>− / +</code>で折りたためます。</p>
+          <p>テキストをクリックし、<code><span class="key-mac">Option</span><span class="key-other">Alt</span> + ←/→</code>で文字間を調整。<br /><code>Tab</code>で文字間を移動、<code>B</code>で比較表示。<br />パレットはドラッグで移動、<code>− / +</code>で折りたたみ。<br /><code><span class="key-mac">Cmd</span><span class="key-other">Ctrl</span> + K</code>で編集モードの切り替え。</p>
+          <nav class="aside-links" data-visual-kerning-ignore>
+            <a href="#for-designers">デザイナーへ</a>
+            <a href="#for-engineers">エンジニアへ</a>
+          </nav>
         </aside>
       </section>
 
@@ -162,7 +167,96 @@
 
       </section>
 
-      <p class="hint">テキストをクリックして編集開始。<code>Tab</code>で文字間を移動、<code>B</code>で比較表示、<code>Cmd/Ctrl + K</code>でエディタの表示/非表示を切り替えられます。</p>
+      <section class="for-designers" id="for-designers" data-visual-kerning-ignore>
+        <h2>デザイナーへ</h2>
+        <p class="for-designers-intro">visual kerning は、CSS の letter-spacing では実現できない<strong>1文字ペアごとの間隔調整</strong>をブラウザ上で行えるツールです。</p>
+
+        <div class="for-designers-block">
+          <h3>エンジニアに依頼する場合</h3>
+          <p class="for-designers-note">以下をコピーしてエンジニアに送ってください。</p>
+          <div class="for-designers-template">
+            <p>見出しやキャッチコピーのカーニングを調整したいです。<br />visual kerning というライブラリで、ブラウザ上でカーニングを調整してJSONに書き出せます。<br />書き出したJSONを本番に適用する手順はREADMEに書いてあります。</p>
+            <p><code class="for-designers-url">https://github.com/ie3jp/visual-kerning/blob/main/README.ja.md</code></p>
+          </div>
+        </div>
+
+        <div class="for-designers-block">
+          <h3>自分でHTMLを書き出す場合</h3>
+          <ol class="for-designers-steps">
+            <li>上部サンドボックスにテキストを入力し、フォントやサイズを設定する</li>
+            <li><code><span class="key-mac">Option</span><span class="key-other">Alt</span> + ←/→</code> で文字間を調整する</li>
+            <li><span class="inline-btn">HTMLを書き出す</span> でカーニング済みHTMLをダウンロードする</li>
+          </ol>
+          <p class="for-designers-note">書き出したHTMLはそのままWebページに貼り付けて使えます。</p>
+        </div>
+      </section>
+
+      <section class="for-engineers" id="for-engineers" data-visual-kerning-ignore>
+        <h2>エンジニアへ</h2>
+        <p class="for-engineers-intro">外部依存ゼロ、フレームワーク非依存。ESM のみ。</p>
+
+        <div class="install-tabs">
+          <div class="install-tab-bar" role="tablist">
+            <button class="install-tab is-active" role="tab" data-tab="npm"><svg class="install-tab-icon" viewBox="0 0 24 24"><path fill="#CB3837" d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"/></svg>npm</button>
+            <button class="install-tab" role="tab" data-tab="yarn"><svg class="install-tab-icon" viewBox="0 0 24 24"><path fill="#2C8EBB" d="M12 0C5.375 0 0 5.375 0 12s5.375 12 12 12 12-5.375 12-12S18.625 0 12 0zm.768 4.105c.183 0 .363.053.525.157.125.083.287.185.755 1.154.31-.088.468-.042.551-.019.204.056.366.19.463.375.477.917.542 2.553.334 3.605-.241 1.232-.755 2.029-1.131 2.576.324.329.778.899 1.117 1.825.278.774.31 1.478.273 2.015a5.51 5.51 0 0 0 .602-.329c.593-.366 1.487-.917 2.553-.931.714-.009 1.269.445 1.353 1.103a1.23 1.23 0 0 1-.945 1.362c-.649.158-.95.278-1.821.843-1.232.797-2.539 1.242-3.012 1.39a1.686 1.686 0 0 1-.704.343c-.737.181-3.266.315-3.466.315h-.046c-.783 0-1.214-.241-1.45-.491-.658.329-1.51.19-2.122-.134a1.078 1.078 0 0 1-.58-1.153 1.243 1.243 0 0 1-.153-.195c-.162-.25-.528-.936-.454-1.946.056-.723.556-1.367.88-1.71a5.522 5.522 0 0 1 .408-2.256c.306-.727.885-1.348 1.32-1.737-.32-.537-.644-1.367-.329-2.21.227-.602.412-.936.82-1.08h-.005c.199-.074.389-.153.486-.259a3.418 3.418 0 0 1 2.298-1.103c.037-.093.079-.185.125-.283.31-.658.639-1.029 1.024-1.168a.94.94 0 0 1 .328-.06z"/></svg>yarn</button>
+            <button class="install-tab" role="tab" data-tab="pnpm"><svg class="install-tab-icon" viewBox="0 0 24 24"><path fill="#F69220" d="M0 0v7.5h7.5V0zm8.25 0v7.5h7.498V0zm8.25 0v7.5H24V0zM8.25 8.25v7.5h7.498v-7.5zm8.25 0v7.5H24v-7.5zM0 16.5V24h7.5v-7.5zm8.25 0V24h7.498v-7.5zm8.25 0V24H24v-7.5z"/></svg>pnpm</button>
+            <button class="install-tab" role="tab" data-tab="cdn"><svg class="install-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>CDN</button>
+          </div>
+          <pre class="install-panel is-active" data-tab="npm"><code><span class="sh-cmd">npm install</span> <span class="sh-pkg">visual-kerning</span></code></pre>
+          <pre class="install-panel" data-tab="yarn"><code><span class="sh-cmd">yarn add</span> <span class="sh-pkg">visual-kerning</span></code></pre>
+          <pre class="install-panel" data-tab="pnpm"><code><span class="sh-cmd">pnpm add</span> <span class="sh-pkg">visual-kerning</span></code></pre>
+          <pre class="install-panel" data-tab="cdn"><code><span class="sh-tag">&lt;script</span> <span class="sh-attr">type</span>=<span class="sh-str">"module"</span><span class="sh-tag">&gt;</span>
+  <span class="sh-kw">import</span> { <span class="sh-fn">createKerningEditor</span> } <span class="sh-kw">from</span>
+    <span class="sh-str">'https://esm.sh/visual-kerning@0.11.0'</span>
+<span class="sh-tag">&lt;/script&gt;</span></code></pre>
+        </div>
+
+        <h3 class="for-engineers-usage-heading">使い方</h3>
+        <div class="for-engineers-usage" data-usage="pkg">
+          <div class="for-engineers-usage-step">
+            <p class="for-engineers-usage-label">開発・ステージング環境で編集</p>
+            <pre class="install-panel is-active"><code><span class="sh-kw">import</span> { <span class="sh-fn">createKerningEditor</span> } <span class="sh-kw">from</span> <span class="sh-str">'visual-kerning'</span>
+
+<span class="sh-kw">const</span> editor = <span class="sh-fn">createKerningEditor</span>({ <span class="sh-attr">editable</span>: <span class="sh-kw">true</span> })
+editor.<span class="sh-fn">mount</span>()</code></pre>
+          </div>
+          <div class="for-engineers-usage-step">
+            <p class="for-engineers-usage-label">本番環境で適用</p>
+            <pre class="install-panel is-active"><code><span class="sh-kw">const</span> editor = <span class="sh-fn">createKerningEditor</span>({
+  <span class="sh-attr">editable</span>: <span class="sh-kw">false</span>,
+  <span class="sh-attr">kerning</span>: kerningData
+})
+editor.<span class="sh-fn">mount</span>()</code></pre>
+          </div>
+        </div>
+        <div class="for-engineers-usage" data-usage="cdn" hidden>
+          <div class="for-engineers-usage-step">
+            <p class="for-engineers-usage-label">開発・ステージング環境で編集</p>
+            <pre class="install-panel is-active"><code><span class="sh-tag">&lt;script</span> <span class="sh-attr">type</span>=<span class="sh-str">"module"</span><span class="sh-tag">&gt;</span>
+<span class="sh-kw">import</span> { <span class="sh-fn">createKerningEditor</span> } <span class="sh-kw">from</span>
+  <span class="sh-str">'https://esm.sh/visual-kerning@0.11.0'</span>
+
+<span class="sh-kw">const</span> editor = <span class="sh-fn">createKerningEditor</span>({ <span class="sh-attr">editable</span>: <span class="sh-kw">true</span> })
+editor.<span class="sh-fn">mount</span>()
+<span class="sh-tag">&lt;/script&gt;</span></code></pre>
+          </div>
+          <div class="for-engineers-usage-step">
+            <p class="for-engineers-usage-label">本番環境で適用</p>
+            <pre class="install-panel is-active"><code><span class="sh-tag">&lt;script</span> <span class="sh-attr">type</span>=<span class="sh-str">"module"</span><span class="sh-tag">&gt;</span>
+<span class="sh-kw">import</span> { <span class="sh-fn">createKerningEditor</span> } <span class="sh-kw">from</span>
+  <span class="sh-str">'https://esm.sh/visual-kerning@0.11.0'</span>
+
+<span class="sh-kw">const</span> editor = <span class="sh-fn">createKerningEditor</span>({
+  <span class="sh-attr">editable</span>: <span class="sh-kw">false</span>,
+  <span class="sh-attr">kerning</span>: kerningData
+})
+editor.<span class="sh-fn">mount</span>()
+<span class="sh-tag">&lt;/script&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <p class="for-engineers-readme">詳しい使い方は <a href="https://github.com/ie3jp/visual-kerning/blob/main/README.ja.md" target="_blank" rel="noopener">README</a> をご覧ください。</p>
+      </section>
 
     </main>
 

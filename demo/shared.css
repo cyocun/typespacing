@@ -83,7 +83,8 @@ main {
 
 .aside p {
   margin: 0;
-  font-size: 15px;
+  font-size: 13px;
+  line-height: 1.7;
   color: var(--muted);
 }
 
@@ -212,6 +213,257 @@ main {
   font: 500 14px/1.7 'Space Grotesk', sans-serif;
   color: var(--muted);
 }
+
+/* --- Aside links (designer / engineer) --- */
+.aside-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.aside-links a {
+  font: 600 13px/1 'Space Grotesk', sans-serif;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--accent);
+  transition: opacity 0.15s;
+}
+.aside-links a::after {
+  content: ' →';
+}
+.aside-links a:hover {
+  opacity: 0.65;
+}
+
+/* --- For designers section --- */
+.for-designers {
+  margin-top: 20px;
+  padding: 28px 32px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+}
+.for-designers h2 {
+  margin: 0 0 16px;
+  font: 700 14px/1.2 'Space Grotesk', sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.for-designers-intro {
+  margin: 0 0 20px;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.for-designers-block {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.for-designers-block + .for-designers-block {
+  margin-top: 20px;
+}
+.for-designers h3 {
+  margin: 0 0 12px;
+  font: 600 13px/1.2 'Space Grotesk', sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.for-designers-note {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.for-designers-steps {
+  margin: 0 0 16px;
+  padding-left: 1.4em;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.for-designers-steps li {
+  margin-bottom: 8px;
+}
+.for-designers-steps li:last-child {
+  margin-bottom: 0;
+}
+.inline-btn {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--ink);
+  color: #fff;
+  font: 600 12px/1.6 'Space Grotesk', sans-serif;
+  letter-spacing: 0.04em;
+  vertical-align: baseline;
+}
+
+.for-designers-template {
+  margin-top: 12px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px dashed var(--line);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+  user-select: all;
+}
+.for-designers-template p {
+  margin: 0;
+}
+.for-designers-template p + p {
+  margin-top: 12px;
+}
+.for-designers-share {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.for-designers-share p {
+  margin: 0 0 8px;
+  font: 600 12px/1 'Space Grotesk', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.for-designers-url {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 14px;
+  word-break: break-all;
+  user-select: all;
+}
+
+/* --- For engineers section --- */
+.for-engineers {
+  margin-top: 20px;
+  padding: 28px 32px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+}
+.for-engineers h2 {
+  margin: 0 0 12px;
+  font: 700 14px/1.2 'Space Grotesk', sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.for-engineers-intro {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.for-engineers-usage-heading {
+  margin: 24px 0 12px;
+  font: 600 13px/1.2 'Space Grotesk', sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.for-engineers-usage {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.for-engineers-usage[hidden] {
+  display: none;
+}
+.for-engineers-usage-label {
+  margin: 0 0 8px;
+  font: 600 12px/1 'Space Grotesk', sans-serif;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.for-engineers-usage-step .install-panel {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+.for-engineers-readme {
+  margin: 16px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.for-engineers-readme a {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Install tabs */
+.install-tabs {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.install-tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.02);
+  justify-content: flex-start;
+}
+.install-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  background: none;
+  font: 600 12px/1 'Space Grotesk', sans-serif;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.install-tab-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  border-radius: 3px;
+}
+.install-tab:not(:last-child) {
+  border-right: 1px solid var(--line);
+}
+.install-tab:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+.install-tab.is-active {
+  background: #fff;
+  color: var(--ink);
+}
+.install-panel {
+  display: none;
+  margin: 0;
+  padding: 14px 18px;
+  font: 400 12px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-all;
+  user-select: all;
+}
+.install-panel code {
+  padding: 0;
+  background: none;
+  font: inherit;
+}
+.install-panel .sh-cmd { color: #6a6a6a; }
+.install-panel .sh-pkg { color: #1a1a1a; font-weight: 600; }
+.install-panel .sh-tag { color: #8b5cf6; }
+.install-panel .sh-attr { color: #d97706; }
+.install-panel .sh-str { color: #059669; }
+.install-panel .sh-kw { color: #8b5cf6; }
+.install-panel .sh-fn { color: #1a1a1a; font-weight: 600; }
+.install-panel.is-active {
+  display: block;
+}
+
+/* --- Platform-specific key labels --- */
+html.is-mac .key-other { display: none; }
+html:not(.is-mac) .key-mac { display: none; }
 
 code {
   padding: 0.15em 0.4em;
@@ -635,5 +887,19 @@ code {
   .lang-toggle a {
     padding: 3px 8px;
     font-size: 11px;
+  }
+
+  .for-designers,
+  .for-engineers {
+    padding: 20px 18px;
+    border-radius: 16px;
+  }
+
+  .for-designers-steps {
+    font-size: 14px;
+  }
+
+  .for-engineers-usage {
+    grid-template-columns: 1fr;
   }
 }

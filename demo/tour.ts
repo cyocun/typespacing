@@ -159,31 +159,9 @@ function createStyleEl(): HTMLStyleElement {
       border-radius: 6px;
     }
     .tour-skip-btn {
-      z-index: ${TOUR_Z};
-      padding: 4px 10px;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 6px;
-      background: transparent;
-      color: rgba(255,255,255,0.6);
-      font: 500 12px/1 'Space Grotesk', sans-serif;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      transition: color 0.15s;
+      position: relative;
+      z-index: ${TOUR_Z_TOP};
     }
-    .tour-skip-btn:hover { color: rgba(255,255,255,0.9); }
-    .tour-replay-btn {
-      padding: 4px 10px;
-      border: 1px solid var(--ink, #1a1a1a);
-      border-radius: 6px;
-      background: var(--ink, #1a1a1a);
-      color: #fff;
-      font: 600 12px/1 'Space Grotesk', sans-serif;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      text-decoration: none;
-      transition: opacity 0.15s;
-    }
-    .tour-replay-btn:hover { opacity: 0.8; }
     .tour-keycap {
       display: inline-block;
       min-width: 24px;
@@ -639,7 +617,7 @@ export function createTour(options: TourOptions): Tour {
     if (replayBtn) return
     ensureStyle()
     replayBtn = document.createElement('button')
-    replayBtn.className = 'tour-replay-btn'
+    replayBtn.className = 'nav-btn'
     if (ignoreAttr) replayBtn.setAttribute(ignoreAttr, 'true')
     replayBtn.textContent = replayLabel
     replayBtn.addEventListener('click', () => {
@@ -681,7 +659,7 @@ export function createTour(options: TourOptions): Tour {
     const styleEl = createStyleEl()
 
     const skipBtn = document.createElement('button')
-    skipBtn.className = 'tour-skip-btn'
+    skipBtn.className = 'nav-btn tour-skip-btn'
     if (ignoreAttr) skipBtn.setAttribute(ignoreAttr, 'true')
     skipBtn.textContent = skipLabel
     skipBtn.addEventListener('click', requestCancel)
@@ -689,7 +667,7 @@ export function createTour(options: TourOptions): Tour {
     function onPagePointerDown(e: PointerEvent) {
       if (!e.isTrusted) return
       const target = e.target as HTMLElement
-      if (target.closest('.tour-skip-btn') || target.closest('.tour-replay-btn')) return
+      if (target.closest('.tour-skip-btn') || target.closest('.nav-btn')) return
       requestCancel()
     }
     function onKeyDown(e: KeyboardEvent) {

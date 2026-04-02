@@ -497,6 +497,23 @@ code {
   background: var(--panel);
   backdrop-filter: blur(8px);
 }
+.nav-btn {
+  display: block;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: 600 12px/1 'Space Grotesk', sans-serif;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  color: var(--muted);
+  background: var(--panel);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
 .lang-toggle a {
   display: block;
   padding: 4px 10px;

@@ -20,34 +20,44 @@ export function createKerningUIPanelController(options: PanelControllerOptions):
 
   let collapsed = false
   let panelPositioned = false
-  let panelX = 0
-  let panelY = 0
+  /** 右端からのオフセット */
+  let panelRight = 0
+  /** 下端からのオフセット */
+  let panelBottom = 0
   let dragPointerId: number | null = null
   let dragOffsetX = 0
   let dragOffsetY = 0
 
-  function clampPanelPosition(x: number, y: number) {
-    const margin = 12
-    const width = panelEl.offsetWidth || 280
-    const height = panelEl.offsetHeight || 120
+  function getPanelSize() {
     return {
-      x: Math.min(Math.max(margin, x), Math.max(margin, window.innerWidth - width - margin)),
-      y: Math.min(Math.max(margin, y), Math.max(margin, window.innerHeight - height - margin)),
+      width: panelEl.offsetWidth || 280,
+      height: panelEl.offsetHeight || 120,
+    }
+  }
+
+  function clampOffsets(right: number, bottom: number) {
+    const margin = 12
+    const { width, height } = getPanelSize()
+    return {
+      right: Math.min(Math.max(margin, right), Math.max(margin, window.innerWidth - width - margin)),
+      bottom: Math.min(Math.max(margin, bottom), Math.max(margin, window.innerHeight - height - margin)),
     }
   }
 
   function syncPanelPosition() {
-    const next = clampPanelPosition(panelX, panelY)
-    panelX = next.x
-    panelY = next.y
-    panelEl.style.left = `${panelX}px`
-    panelEl.style.top = `${panelY}px`
+    const clamped = clampOffsets(panelRight, panelBottom)
+    panelRight = clamped.right
+    panelBottom = clamped.bottom
+    const { width, height } = getPanelSize()
+    panelEl.style.left = `${window.innerWidth - panelRight - width}px`
+    panelEl.style.top = `${window.innerHeight - panelBottom - height}px`
   }
 
   function onPointerMove(event: PointerEvent) {
     if (dragPointerId !== event.pointerId) return
-    panelX = event.clientX - dragOffsetX
-    panelY = event.clientY - dragOffsetY
+    const { width, height } = getPanelSize()
+    panelRight = window.innerWidth - (event.clientX - dragOffsetX) - width
+    panelBottom = window.innerHeight - (event.clientY - dragOffsetY) - height
     syncPanelPosition()
   }
 
@@ -78,9 +88,8 @@ export function createKerningUIPanelController(options: PanelControllerOptions):
     },
     positionDefault() {
       if (!panelPositioned) {
-        const rect = panelEl.getBoundingClientRect()
-        panelX = window.innerWidth - rect.width - 16
-        panelY = window.innerHeight - rect.height - 16
+        panelRight = 16
+        panelBottom = 16
         panelPositioned = true
       }
       syncPanelPosition()
@@ -91,10 +100,12 @@ export function createKerningUIPanelController(options: PanelControllerOptions):
     startDrag(event: PointerEvent) {
       const target = event.target as HTMLElement
       if (target.closest('button')) return
-      const rect = panelEl.getBoundingClientRect()
+      const { width, height } = getPanelSize()
+      const left = window.innerWidth - panelRight - width
+      const top = window.innerHeight - panelBottom - height
       dragPointerId = event.pointerId
-      dragOffsetX = event.clientX - rect.left
-      dragOffsetY = event.clientY - rect.top
+      dragOffsetX = event.clientX - left
+      dragOffsetY = event.clientY - top
       panelEl.classList.add('is-dragging')
       window.addEventListener('pointermove', onPointerMove)
       window.addEventListener('pointerup', onPointerEnd)

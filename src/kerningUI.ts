@@ -8,9 +8,9 @@ import {
   createVisualKerningPlugin,
   MODIFIED_CLASS,
   OVERLAY_CLASS,
-  seedPersistedKerningData,
   type VisualKerningPlugin,
 } from './kerningEditor'
+import { seedPersistedKerningData } from './kerningEditorStorage'
 import { createKerningUIPanelController } from './kerningUIPanelController'
 import { createKerningUIRoot } from './kerningUIRoot'
 

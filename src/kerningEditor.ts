@@ -22,6 +22,7 @@ import {
   loadPersistedData,
   removePersistedData,
   savePersistedData,
+  seedPersistedKerningData,
 } from './kerningEditorStorage'
 import {
   findGapIndex,
@@ -32,7 +33,7 @@ import {
 import { createTypedEventEmitter, type TypedEventEmitter } from './typedEventEmitter'
 import type { PersistedKerningArea } from './validation'
 
-export { LOG_PREFIX, STORAGE_KEY, TOOL_NAME, seedPersistedKerningData } from './kerningEditorStorage'
+export { LOG_PREFIX, STORAGE_KEY, TOOL_NAME } from './kerningEditorStorage'
 
 export interface ValueBox<T> {
   value: T

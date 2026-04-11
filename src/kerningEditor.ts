@@ -285,6 +285,13 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
     set value(_) { /* read-only */ },
   }
 
+  // Mouse drag state
+  let isDragging = false
+  let dragStartX = 0
+  let dragStartY = 0
+  let dragTextEl: HTMLElement | null = null
+  const DRAG_THRESHOLD = 3
+
   function hasSelection(): boolean {
     return cursorGapEnd.value !== null && cursorGapEnd.value !== cursorGap.value
   }
@@ -476,8 +483,21 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
     return null
   }
 
-  function onClick(e: MouseEvent) {
+  function onSelectStart(e: Event) {
+    e.preventDefault()
+  }
+
+  function removeDragListeners() {
+    window.removeEventListener('mousemove', onMouseMove)
+    window.removeEventListener('mouseup', onMouseUp)
+    document.removeEventListener('selectstart', onSelectStart)
+    isDragging = false
+    dragTextEl = null
+  }
+
+  function onMouseDown(e: MouseEvent) {
     if (!enabled.value) return
+    if (e.button !== 0) return
 
     const rawTarget = e.target as Node
     const target = rawTarget.nodeType === Node.TEXT_NODE ? rawTarget.parentElement : rawTarget as Element
@@ -510,12 +530,58 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
     if (e.shiftKey && activeSelector.value === selector && cursorGap.value >= -1) {
       // Shift+クリック: 現在位置から範囲拡張
       cursorGapEnd.value = clickedGap
-    } else {
-      activeSelector.value = selector
-      cursorGap.value = clickedGap
-      cursorGapEnd.value = null
+      updateCursor()
+      emitter.emit('select', {
+        selector: activeSelector.value,
+        gapIndex: cursorGap.value,
+        gapIndexEnd: cursorGapEnd.value,
+      })
+      return
     }
+
+    // カーソル位置を設定
+    activeSelector.value = selector
+    cursorGap.value = clickedGap
+    cursorGapEnd.value = null
     updateCursor()
+
+    // ドラッグ追跡を開始
+    dragStartX = e.clientX
+    dragStartY = e.clientY
+    dragTextEl = textEl
+    isDragging = false
+
+    removeDragListeners()
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onMouseUp)
+    document.addEventListener('selectstart', onSelectStart)
+  }
+
+  function onMouseMove(e: MouseEvent) {
+    if (!dragTextEl) return
+
+    if (!isDragging) {
+      const dx = e.clientX - dragStartX
+      const dy = e.clientY - dragStartY
+      if (dx * dx + dy * dy < DRAG_THRESHOLD * DRAG_THRESHOLD) return
+      isDragging = true
+    }
+
+    const spans = getCharSpans(dragTextEl)
+    const gapIndex = findGapIndex(spans, e.clientX, e.clientY)
+    cursorGapEnd.value = gapIndex
+    updateCursor()
+  }
+
+  function onMouseUp(_e: MouseEvent) {
+    removeDragListeners()
+
+    // ゼロ幅選択を解消
+    if (cursorGapEnd.value !== null && cursorGapEnd.value === cursorGap.value) {
+      cursorGapEnd.value = null
+      updateCursor()
+    }
+
     emitter.emit('select', {
       selector: activeSelector.value,
       gapIndex: cursorGap.value,
@@ -623,7 +689,18 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
       const area = areas.value.get(activeSelector.value)
       if (!area) return
       const spans = getCharSpans(area.el)
-      cursorGap.value = moveCursorVertically(spans, cursorGap.value, e.key === 'ArrowUp' ? 'up' : 'down')
+      const direction = e.key === 'ArrowUp' ? 'up' : 'down'
+
+      if (e.shiftKey) {
+        // Shift+上下矢印: 範囲拡張
+        const end = cursorGapEnd.value ?? cursorGap.value
+        cursorGapEnd.value = moveCursorVertically(spans, end, direction)
+      } else if (hasSelection()) {
+        // 範囲選択中に上下矢印（Shiftなし）: 範囲を解除してその端にカーソルを置く
+        collapseSelection(direction === 'up' ? 'start' : 'end')
+      } else {
+        cursorGap.value = moveCursorVertically(spans, cursorGap.value, direction)
+      }
       updateCursor()
       return
     }
@@ -752,7 +829,7 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
     resetAll,
     importJSON,
     mount() {
-      window.addEventListener('click', onClick, true)
+      window.addEventListener('mousedown', onMouseDown, true)
       window.addEventListener('keydown', onKeydown, true)
       window.addEventListener('scroll', onScrollOrResize, true)
       window.addEventListener('resize', onScrollOrResize)
@@ -765,8 +842,9 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
     },
     unmount() {
       window.clearTimeout(loadTimerId)
+      removeDragListeners()
       deactivate()
-      window.removeEventListener('click', onClick, true)
+      window.removeEventListener('mousedown', onMouseDown, true)
       window.removeEventListener('keydown', onKeydown, true)
       window.removeEventListener('scroll', onScrollOrResize, true)
       window.removeEventListener('resize', onScrollOrResize)

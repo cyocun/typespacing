@@ -98,7 +98,9 @@ interface KerningExport {
 
 - Cmd/Ctrl + K: toggle edit mode
 - Click: select text block and gap
+- Drag: select a range of gaps
 - Shift + Click: extend selection to range
+- Cmd/Ctrl + A: select all gaps in the active text block
 - Tab / Shift+Tab: next / previous gap
 - Arrow Left/Right: move cursor
 - Shift + Arrow Left/Right: extend selection
@@ -106,6 +108,7 @@ interface KerningExport {
 - Alt + Shift + Arrow Left/Right: adjust by +/-1
 - Alt + Arrow Left/Right: adjust by +/-10
 - Alt + Cmd/Ctrl + Arrow Left/Right: adjust by +/-100
+- Alt + Cmd/Ctrl + Q: reset selected gaps to zero
 - Esc: clear selection
 - B: toggle Before/After compare
 

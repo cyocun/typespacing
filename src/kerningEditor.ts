@@ -27,6 +27,8 @@ import {
 import {
   findGapIndex,
   getGapRect,
+  getSelectionGapRects,
+  isLineBreakGap,
   moveCursorVertically,
   type CursorRect,
 } from './kerningEditorMath'
@@ -342,8 +344,7 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
       const bounds = getSelectionBounds()!
       const rects: CursorRect[] = []
       for (let i = bounds[0]; i <= bounds[1]; i++) {
-        const r = getGapRect(spans, i)
-        if (r) rects.push(r)
+        for (const r of getSelectionGapRects(spans, i)) rects.push(r)
       }
       selectionRange.value = rects.length > 0 ? { rects } : null
       cursorRect.value = null
@@ -505,14 +506,14 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
     if (target.closest(`.${OVERLAY_CLASS}`) || target.closest('svg')) return
     if (target.closest(IGNORE_SELECTOR)) return
 
-    e.preventDefault()
-    e.stopPropagation()
-
     const textEl = findTextElement(target)
     if (!textEl) {
       deactivate()
       return
     }
+
+    e.preventDefault()
+    e.stopPropagation()
 
     const selector = generateSelector(textEl)
     ensureEditableArea(textEl, selector)
@@ -536,6 +537,13 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
         gapIndex: cursorGap.value,
         gapIndexEnd: cursorGapEnd.value,
       })
+      // Shift+ドラッグでさらに拡張できるようリスナーを登録
+      removeDragListeners()
+      dragTextEl = textEl
+      isDragging = true
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('mouseup', onMouseUp)
+      document.addEventListener('selectstart', onSelectStart)
       return
     }
 
@@ -545,13 +553,13 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
     cursorGapEnd.value = null
     updateCursor()
 
-    // ドラッグ追跡を開始
+    // ドラッグ追跡を開始（removeDragListeners が dragTextEl をクリアするため先に呼ぶ）
+    removeDragListeners()
     dragStartX = e.clientX
     dragStartY = e.clientY
     dragTextEl = textEl
     isDragging = false
 
-    removeDragListeners()
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup', onMouseUp)
     document.addEventListener('selectstart', onSelectStart)
@@ -568,12 +576,18 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
     }
 
     const spans = getCharSpans(dragTextEl)
-    const gapIndex = findGapIndex(spans, e.clientX, e.clientY)
+    let stickyLineY: number | undefined
+    if (cursorGapEnd.value !== null) {
+      const prevRect = getGapRect(spans, cursorGapEnd.value)
+      if (prevRect) stickyLineY = prevRect.y + prevRect.h / 2
+    }
+    const gapIndex = findGapIndex(spans, e.clientX, e.clientY, stickyLineY)
     cursorGapEnd.value = gapIndex
     updateCursor()
   }
 
-  function onMouseUp(_e: MouseEvent) {
+  function onMouseUp(e: MouseEvent) {
+    if (e.button !== 0) return
     removeDragListeners()
 
     // ゼロ幅選択を解消
@@ -609,6 +623,54 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
       return
     }
 
+    // Cmd+A: アクティブ要素内の全ギャップを選択
+    if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
+      const selector = activeSelector.value
+      if (!selector || cursorGap.value < -1) return
+      e.preventDefault()
+      e.stopPropagation()
+      const area = areas.value.get(selector)
+      if (!area) return
+      cursorGap.value = -1
+      cursorGapEnd.value = area.kerning.length - 1
+      updateCursor()
+      emitter.emit('select', {
+        selector: activeSelector.value,
+        gapIndex: cursorGap.value,
+        gapIndexEnd: cursorGapEnd.value,
+      })
+      return
+    }
+
+    // Cmd+Alt+Q: 選択中のギャップをゼロにリセット
+    if ((e.metaKey || e.ctrlKey) && e.altKey && e.key === 'q') {
+      const selector = activeSelector.value
+      if (!selector || cursorGap.value < -1) return
+      e.preventDefault()
+      e.stopPropagation()
+      const area = areas.value.get(selector)
+      if (!area) return
+      const spans = getCharSpans(area.el)
+      const bounds = getSelectionBounds()
+      if (bounds) {
+        for (let i = bounds[0]; i <= bounds[1]; i++) {
+          if (i === -1) area.indent = 0
+          else area.kerning[i] = 0
+        }
+      } else {
+        const idx = cursorGap.value
+        if (idx === -1) area.indent = 0
+        else area.kerning[idx] = 0
+      }
+      applyKerningToSpans(spans, area.kerning, area.indent)
+      if (isAreaModified(area)) area.el.classList.add(MODIFIED_CLASS)
+      else area.el.classList.remove(MODIFIED_CLASS)
+      updateCursor()
+      savePersistedData(toPersistedData(areas.value))
+      emitter.emit('change', { selector, kerning: [...area.kerning], indent: area.indent })
+      return
+    }
+
     if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
       const selector = activeSelector.value
       if (!selector || cursorGap.value < -1) return
@@ -627,7 +689,9 @@ export function createVisualKerningPlugin(): VisualKerningPlugin {
       if (bounds) {
         // 範囲選択: 内側ギャップのみ同量調整（トラッキング）
         // bounds[0] は選択外との左端エッジなのでスキップ
+        // 改行直後のギャップ（行頭）もスキップ
         for (let i = bounds[0] + 1; i <= bounds[1]; i++) {
+          if (isLineBreakGap(spans, i)) continue
           if (i === -1) {
             area.indent += delta
           } else {

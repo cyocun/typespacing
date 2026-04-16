@@ -21,17 +21,23 @@ function getSpanRect(spans: HTMLElement[], index: number): DOMRect | null {
   return span.getBoundingClientRect()
 }
 
-export function findGapIndex(spans: HTMLElement[], clientX: number, clientY: number): number {
+export function findGapIndex(spans: HTMLElement[], clientX: number, clientY: number, stickyLineY?: number): number {
   if (spans.length < 1) return -1
 
   const rects = spans.map(span => span.getBoundingClientRect())
   if (rects.length === 0) return -1
 
+  const lineHeight = rects[0]?.height ?? 0
+  const hysteresis = lineHeight * 0.15
+
   let bestLineY = Infinity
   let bestLineDist = Infinity
   for (const rect of rects) {
     const midY = (rect.top + rect.bottom) / 2
-    const dist = Math.abs(clientY - midY)
+    let dist = Math.abs(clientY - midY)
+    if (stickyLineY !== undefined && Math.abs(midY - stickyLineY) > lineHeight * 0.5) {
+      dist += hysteresis
+    }
     if (dist < bestLineDist) {
       bestLineDist = dist
       bestLineY = midY
@@ -116,6 +122,30 @@ export function getGapRect(spans: HTMLElement[], gapIndex: number): CursorRect |
     y: Math.min(left.top, right.top),
     h: Math.max(left.bottom, right.bottom) - Math.min(left.top, right.top),
   }
+}
+
+/** 指定ギャップが改行をまたぐかどうか */
+export function isLineBreakGap(spans: HTMLElement[], gapIndex: number): boolean {
+  const left = getSpanRect(spans, gapIndex)
+  const right = getSpanRect(spans, gapIndex + 1)
+  return !!left && !!right && isLineBreakBetween(left, right)
+}
+
+/** 選択範囲描画用: 改行ギャップでは前行末と次行頭の2つのレクトを返す */
+export function getSelectionGapRects(spans: HTMLElement[], gapIndex: number): CursorRect[] {
+  if (spans.length === 0) return []
+
+  const left = getSpanRect(spans, gapIndex)
+  const right = getSpanRect(spans, gapIndex + 1)
+  if (left && right && isLineBreakBetween(left, right)) {
+    return [
+      { x: left.right, y: left.top, h: left.height },
+      { x: right.left, y: right.top, h: right.height },
+    ]
+  }
+
+  const r = getGapRect(spans, gapIndex)
+  return r ? [r] : []
 }
 
 export function getGapPositions(spans: HTMLElement[]): GapPosition[] {

@@ -1,6 +1,6 @@
 # Visual Kerning
 
-[English](./README.md) | [日本語](./README.ja.md)
+[English](./README.md) | [日本語](./README.ja.md) | [Deutsch](./README.de.md) | [简体中文](./README.zh-CN.md) | [한국어](./README.ko.md)
 
 [![npm](https://img.shields.io/npm/v/visual-kerning?style=flat-square&color=888)](https://www.npmjs.com/package/visual-kerning)
 [![Playground](https://img.shields.io/badge/playground-live-888?style=flat-square)](https://ie3jp.github.io/visual-kerning/)

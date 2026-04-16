@@ -322,7 +322,12 @@ export function visualKerning(options: VisualKerningOptions = {}): VisualKerning
 
     if (cursor || sel) {
       valueEl.style.display = 'block'
-      const anchor = cursor ?? (sel ? sel.rects[0] : null)
+      const selAnchor = sel
+        ? (plugin.cursorGapEnd.value !== null && plugin.cursorGapEnd.value > plugin.cursorGap.value
+          ? sel.rects[sel.rects.length - 1]
+          : sel.rects[0])
+        : null
+      const anchor = cursor ?? selAnchor
       if (anchor) {
         valueEl.style.left = `${anchor.x}px`
         valueEl.style.top = `${anchor.y}px`
